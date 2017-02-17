@@ -1,10 +1,10 @@
 {
   "name": "mocha-request-describer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "lib/index.js",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/youpy/mocha-request-describer"
+    "type": "git",
+    "url": "https://github.com/youpy/mocha-request-describer"
   },
   "author": "youpy <youpy@buycheapviagraonlinenow.com>",
   "homepage": "https://github.com/youpy/mocha-request-describer",
@@ -21,7 +21,10 @@
   ],
   "devDependencies": {
     "@types/body-parser": "^0.0.33",
+    "@types/express": "^4.0.35",
+    "@types/mocha": "^2.2.39",
     "@types/power-assert": "^1.4.29",
+    "@types/supertest": "^2.0.0",
     "@types/uri-templates": "^0.1.28",
     "body-parser": "^1.16.1",
     "espower-typescript": "^7.0.0",
@@ -32,9 +35,6 @@
     "watch": "^1.0.1"
   },
   "dependencies": {
-    "@types/express": "^4.0.35",
-    "@types/mocha": "^2.2.39",
-    "@types/supertest": "^2.0.0",
     "supertest": "^3.0.0",
     "uri-templates": "^0.2.0"
   }
