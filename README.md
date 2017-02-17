@@ -7,6 +7,8 @@ Inspired by [r7kamura](https://github.com/r7kamura)'s [rspec-request_describer](
 ```javascript
 import { makeRequest } from 'mocha-request-describer';
 
+// use the syntax of URI Template (https://tools.ietf.org/html/rfc6570)
+// for describing a request
 describe('GET /foo/{path}{?param}', () => {
   const app = express();
   let req;
@@ -20,7 +22,7 @@ describe('GET /foo/{path}{?param}', () => {
   it('makes request with query', async () => {
     // makes request `GET /foo/bar?param=value`
     const res = await req({ path: 'bar', param: 'value' })
-      // you can use supertest API
+      // you can use supertest API (https://github.com/visionmedia/supertest#api)
       .expect(200);
 
     assert(res.body.method === 'GET');
