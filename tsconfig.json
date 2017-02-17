@@ -4,6 +4,8 @@
     "noImplicitAny": true,
     "module": "commonjs",
     "target": "es2015",
-    "outDir": "./lib/"
+    "outDir": "./lib/",
+    "declarationDir": "./",
+    "declaration": true
   }
 }
