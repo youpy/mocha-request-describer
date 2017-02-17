@@ -9,8 +9,10 @@ const supertest = require('supertest');
 const supportedMethods = 'GET POST PUT PATCH DELETE'.split(' ');
 const re = new RegExp(`(${supportedMethods.join('|')}) (\/[^\\s]+)$`);
 
-export function makeRequest(serverOrApp: http.Server | express.Application): (test: mocha.ISuite, params?: Object, data?: Object) => st.Test {
-  return function (test: mocha.ISuite, params: Object = {}, data: Object = {}): st.Test {
+export type makeRequestFn = (params?: Object, data?: Object) => st.Test;
+
+export function makeRequest(serverOrApp: http.Server | express.Application, test: mocha.ISuite): makeRequestFn {
+  return function (params: Object = {}, data: Object = {}): st.Test {
     let matched;
 
     while (test) {

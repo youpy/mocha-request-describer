@@ -1,16 +1,8 @@
 import * as assert from 'power-assert';
 import * as http from 'http';
-import { makeRequest } from '../src/';
+import { makeRequestFn, makeRequest } from '../src/';
 import * as express from 'express';
-import * as st from 'supertest';
 import * as bodyParser from 'body-parser';
-import * as mocha from 'mocha';
-
-declare module 'mocha' {
-  interface ITestCallbackContext {
-    test: mocha.ISuite;
-  }
-}
 
 const app = express();
 const echo = (req: express.Request, res: express.Response) => {
@@ -30,12 +22,12 @@ app.post('/bar', echo);
 
 describe('mocha-request-describer', () => {
   let server: http.Server;
-  let req: (suite: mocha.ISuite, params?: Object, data?: Object) => st.Test;
+  let req: makeRequestFn;
 
   const sharedExamples = () => {
     describe('GET /foo', () => {
-      it('makes request from description', async function () {
-        const res = await req(this.test)
+      it('makes request from description', async () => {
+        const res = await req()
           .expect(200);
 
         assert(res.body.path === '/foo');
@@ -44,8 +36,8 @@ describe('mocha-request-describer', () => {
 
     describe('GET /{path}{?param}', () => {
       describe('200', () => {
-        it('makes request with query', async function () {
-          const res = await req(this.test, { path: 'foo', param: 'value' })
+        it('makes request with query', async () => {
+          const res = await req({ path: 'foo', param: 'value' })
             .expect(200);
 
           assert(res.body.method === 'GET');
@@ -53,8 +45,8 @@ describe('mocha-request-describer', () => {
           assert(res.body.query.param === 'value');
         });
 
-        it('makes request without query', async function () {
-          const res = await req(this.test, { path: 'foo' })
+        it('makes request without query', async () => {
+          const res = await req({ path: 'foo' })
             .expect(200);
 
           assert(res.body.method === 'GET');
@@ -64,16 +56,16 @@ describe('mocha-request-describer', () => {
       });
 
       describe('404', () => {
-        it('returns 404', async function () {
-          await req(this.test, { path: 'bar' })
+        it('returns 404', async () => {
+          await req({ path: 'bar' })
             .expect(404);
         });
       });
     });
 
     describe('POST /bar', () => {
-      it('makes request with request body', async function () {
-        const res = await req(this.test, {}, { 'prop': 'value' })
+      it('makes request with request body', async () => {
+        const res = await req({}, { 'prop': 'value' })
           .expect(200);
 
         assert(res.body.method === 'POST');
@@ -83,9 +75,9 @@ describe('mocha-request-describer', () => {
     });
 
     describe('no request description', () => {
-      it('throws error', async function () {
+      it('throws error', async () => {
         try {
-          await req(this.test);
+          await req();
 
           assert(false);
         } catch (e) {
@@ -96,9 +88,9 @@ describe('mocha-request-describer', () => {
   };
 
   describe('make request from an instance of http.Server', () => {
-    beforeEach(() => {
+    beforeEach(function () {
       server = app.listen(10081);
-      req = makeRequest(server);
+      req = makeRequest(server, this.currentTest);
     });
 
     afterEach(() => {
@@ -109,8 +101,8 @@ describe('mocha-request-describer', () => {
   });
 
   describe('make request from an instance of express.Application', () => {
-    before(() => {
-      req = makeRequest(app);
+    beforeEach(function () {
+      req = makeRequest(app, this.currentTest);
     });
 
     sharedExamples();
